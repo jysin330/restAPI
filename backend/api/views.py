@@ -5,7 +5,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from products.serializers import ProductSerializer
-
+# from django.http import JsonResponse
 
 @api_view(["POST"])
 def api_home(request, *args, **kwargs):
@@ -13,20 +13,27 @@ def api_home(request, *args, **kwargs):
     '''
     Django rest framework API VIEW
     '''
+    serializer = ProductSerializer(data = request.data)
+    if serializer.is_valid(raise_exception=True):
+        instance = serializer.save()
+        print(instance)
+        # serializer = serializer.data
+        return Response(serializer.data)
     
+    return Response({"invalid": "not good data"})
     # if request.method != "POST":
     #     return Response({"message": "get method is not allowed"}, status=405)
     
-    instance = Product.objects.all().order_by("?").first()
+    # instance = Product.objects.all().order_by("?").first()
     
-    data = {}
+    # data = {}
     
-    if instance:
-        data = ProductSerializer(instance).data
     # if instance:
-    #     data = model_to_dict(instance, fields=['id', "title","price", "sale_price"])
+    #     data = ProductSerializer(instance).data
+    # # if instance:
+    # #     data = model_to_dict(instance, fields=['id', "title","price", "sale_price"])
         
-    return Response(data)
+    # return Response(data)
     
     
 
